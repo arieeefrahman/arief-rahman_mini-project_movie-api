@@ -80,7 +80,7 @@ func (rr *ratingRepository) Delete(id string) bool {
 	var rating ratings.Domain = rr.GetByID(id)
 
 	deletedRating := FromDomain(&rating)
-	result := rr.conn.Delete(&deletedRating)
+	result := rr.conn.Unscoped().Delete(&deletedRating)
 
 	var avg float64
 	movieId := deletedRating.MovieID
@@ -89,8 +89,7 @@ func (rr *ratingRepository) Delete(id string) bool {
 	row.Scan(&avg)
 
 	// update rating_score to table `movies`
-	rr.conn.Table("movies").Where("id = ?", movieId).Updates(map[string]interface{}{"rating_score": &avg, "updated_at": deletedRating.DeletedAt})
-
+	rr.conn.Table("movies").Where("id = ?", movieId).Update("rating_score", &avg)
 	return result.RowsAffected != 0
 }
 
