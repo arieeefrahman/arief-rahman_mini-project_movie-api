@@ -1,6 +1,7 @@
 package mysql_driver
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -9,6 +10,9 @@ import (
 	"mini-project-movie-api/drivers/mysql/ratings"
 	"mini-project-movie-api/drivers/mysql/users"
 
+	_utils "mini-project-movie-api/utils"
+
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -65,4 +69,87 @@ func CloseDB(db *gorm.DB) error {
 	log.Println("database connection is closed")
 
 	return nil
+}
+
+func SeedGenre(db *gorm.DB) genres.Genre {
+	genre, _ := _utils.CreateFaker[genres.Genre]()
+
+	if err := db.Create(&genre).Error; err != nil {
+		panic(err)
+	}
+
+	db.Last(&genre)
+
+	return genre
+}
+
+func SeedMovie(db *gorm.DB) movies.Movie {
+	genre := SeedGenre(db)
+
+	movie, _ := _utils.CreateFaker[movies.Movie]()
+
+	movie.GenreID = genre.ID
+
+	if err := db.Create(&movie).Error; err != nil {
+		panic(err)
+	}
+
+	db.Last(&movie)
+
+	return movie
+}
+
+func SeedRating(db *gorm.DB) ratings.Rating {
+	movie := SeedMovie(db)
+
+	rating, _ := _utils.CreateFaker[ratings.Rating]()
+
+	rating.MovieID = movie.ID
+
+	if err := db.Create(&rating).Error; err != nil {
+		panic(err)
+	}
+
+	db.Last(&rating)
+
+	return rating
+}
+
+func SeedUser(db *gorm.DB) users.User {
+	password, _ := bcrypt.GenerateFromPassword([]byte("123123"), bcrypt.DefaultCost)
+
+	fakeUser, _ := _utils.CreateFaker[users.User]()
+
+	userRecord := users.User{
+		Email:    fakeUser.Email,
+		Password: string(password),
+	}
+
+	if err := db.Create(&userRecord).Error; err != nil {
+		panic(err)
+	}
+
+	var foundUser users.User
+
+	db.Last(&foundUser)
+
+	foundUser.Password = "123123"
+
+	return foundUser
+}
+
+func CleanSeeders(db *gorm.DB) {
+	db.Exec("SET FOREIGN_KEY_CHECKS = 0")
+
+	genreResult := db.Exec("DELETE FROM genres")
+	itemResult := db.Exec("DELETE FROM movies")
+	userResult := db.Exec("DELETE FROM users")
+
+	var isFailed bool = itemResult.Error != nil || userResult.Error != nil || genreResult.Error != nil
+
+	if isFailed {
+		panic(errors.New("error when cleaning up seeders"))
+	}
+
+	log.Println("Seeders are cleaned up successfully")
 }
