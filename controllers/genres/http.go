@@ -55,6 +55,13 @@ func (gc *GenreController) Create(c echo.Context) error {
 		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
 	}
 
+	check := gc.genreUseCase.GetByName(input.Name)
+
+	// handle duplicate
+	if input.Name == check.Name {
+		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "duplicate name", "")
+	}
+
 	genre := gc.genreUseCase.Create(input.ToDomain())
 
 	if genre.ID == 0 {
