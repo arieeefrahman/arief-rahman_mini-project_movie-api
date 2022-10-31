@@ -9,13 +9,15 @@ import (
 	_dbDriver "mini-project-movie-api/drivers/mysql"
 
 	_genreUseCase "mini-project-movie-api/businesses/genres"
-	_movieUseCase "mini-project-movie-api/businesses/movies"
-	_ratingUseCase "mini-project-movie-api/businesses/ratings"
-	_userUseCase "mini-project-movie-api/businesses/users"
-
 	_genreController "mini-project-movie-api/controllers/genres"
+
+	_movieUseCase "mini-project-movie-api/businesses/movies"
 	_movieController "mini-project-movie-api/controllers/movies"
+
+	_ratingUseCase "mini-project-movie-api/businesses/ratings"
 	_ratingController "mini-project-movie-api/controllers/ratings"
+
+	_userUseCase "mini-project-movie-api/businesses/users"
 	_userController "mini-project-movie-api/controllers/users"
 
 	"github.com/labstack/echo/v4"
