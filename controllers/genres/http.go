@@ -108,9 +108,8 @@ func (gc *GenreController) Delete(c echo.Context) error {
 	isDeleted := gc.genreUseCase.Delete(id)
 
 	if !isDeleted {
-		return ctrl.NewResponse(c, http.StatusFound, "failed", "id not found", "")
+		return ctrl.NewResponse(c, http.StatusNotFound, "failed", "genre not found", "")
 	}
 
 	return ctrl.NewResponse(c, http.StatusOK, "success", "genre deleted", "")
-
 }
