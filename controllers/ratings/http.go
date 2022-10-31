@@ -53,7 +53,7 @@ func (rc *RatingController) Create(c echo.Context) error {
 	input := request.Rating{}
 
 	if err := c.Bind(&input); err != nil {
-		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "bind failed", "")
+		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
 	}
 	
 	user := c.Get("user").(*jwt.Token)
