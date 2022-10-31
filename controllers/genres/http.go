@@ -28,7 +28,7 @@ func (gc *GenreController) GetAll(c echo.Context) error {
 		genres = append(genres, response.FromDomain(&genre))
 	}
 
-	return ctrl.NewResponse(c, http.StatusBadRequest, "success", "all genres", genres)
+	return ctrl.NewResponse(c, http.StatusOK, "success", "all genres", genres)
 }
 
 func (gc *GenreController) GetByID(c echo.Context) error {	
