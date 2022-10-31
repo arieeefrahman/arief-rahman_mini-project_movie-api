@@ -213,6 +213,7 @@ func TestSignup_Success(t *testing.T) {
 
 	apitest.
 		New().
+		Observe(cleanup).
 		Handler(newApp()).
 		Post("/api/v1/users/signup").
 		JSON(userRequest).
@@ -336,22 +337,23 @@ func TestGetGenres_Success(t *testing.T) {
 		End()
 }
 
-func TestGetGenreByID_Success(t *testing.T) {
+func TestGetGenre_Success(t *testing.T) {
 	var token string = getJwtToken(t)
-	genre := getGenre()
-	genreID := strconv.Itoa(int(genre.ID))
+	var genre genres.Genre = getGenre()
+	id := strconv.Itoa(int(genre.ID))
 
 	apitest.
 		New().
+		Observe(cleanup).
 		Handler(newApp()).
-		Get("/api/v1/genres/" + genreID).
+		Get("/api/v1/genres/" + id).
 		Header("Authorization", token).
 		Expect(t).
 		Status(http.StatusOK).
 		End()
 }
 
-func TestGetGenreByID_Failed(t *testing.T) {
+func TestGetGenre_Failed(t *testing.T) {
 	var token string = getJwtToken(t)
 
 	apitest.
@@ -396,11 +398,43 @@ func TestUpdateGenre_ValidationFailed(t *testing.T) {
 
 	apitest.
 		New().
+		Observe(cleanup).
 		Handler(newApp()).
 		Put("/api/v1/genres/" + genreID).
 		Header("Authorization", token).
 		JSON(genreRequest).
 		Expect(t).
 		Status(http.StatusBadRequest).
+		End()
+}
+
+func TestDeleteGenre_Success(t *testing.T) {
+	var token string = getJwtToken(t)
+	
+	genre := getGenre()
+	genreID := strconv.Itoa(int(genre.ID))
+
+	apitest.
+		New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Delete("/api/v1/genres/" + genreID).
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+
+}
+
+func TestDeleteGenre_Failed(t *testing.T) {
+	var token string = getJwtToken(t)
+	
+	apitest.
+		New().
+		Handler(newApp()).
+		Delete("/api/v1/genres/-1").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusNotFound).
 		End()
 }
