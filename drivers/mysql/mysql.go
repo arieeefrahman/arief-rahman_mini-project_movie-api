@@ -119,9 +119,9 @@ func SeedUser(db *gorm.DB) users.User {
 	password, _ := bcrypt.GenerateFromPassword([]byte("123123"), bcrypt.DefaultCost)
 
 	fakeUser, _ := _utils.CreateFaker[users.User]()
-
+	fakeEmail := fmt.Sprintf("%s@gmail.com", fakeUser.Email)
 	userRecord := users.User{
-		Email:    fakeUser.Email,
+		Email:    fakeEmail,
 		Password: string(password),
 	}
 
