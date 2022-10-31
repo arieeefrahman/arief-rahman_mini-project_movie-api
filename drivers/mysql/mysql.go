@@ -142,10 +142,11 @@ func CleanSeeders(db *gorm.DB) {
 	db.Exec("SET FOREIGN_KEY_CHECKS = 0")
 
 	genreResult := db.Exec("DELETE FROM genres")
-	itemResult := db.Exec("DELETE FROM movies")
+	movieResult := db.Exec("DELETE FROM movies")
+	ratingResult := db.Exec("DELETE FROM ratings")
 	userResult := db.Exec("DELETE FROM users")
 
-	var isFailed bool = itemResult.Error != nil || userResult.Error != nil || genreResult.Error != nil
+	var isFailed bool = movieResult.Error != nil || userResult.Error != nil || genreResult.Error != nil || ratingResult.Error != nil
 
 	if isFailed {
 		panic(errors.New("error when cleaning up seeders"))
