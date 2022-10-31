@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"testing"
 
-	// "time"
-
 	_driverFactory "mini-project-movie-api/drivers"
 
 	_dbDriver "mini-project-movie-api/drivers/mysql"
@@ -34,7 +32,6 @@ import (
 
 	echo "github.com/labstack/echo/v4"
 	"github.com/steinfletcher/apitest"
-	// "gorm.io/datatypes"
 )
 
 func newApp() *echo.Echo {
@@ -299,7 +296,6 @@ func TestCreateGenre_Success(t *testing.T) {
 
 	apitest.
 		New().
-		Observe(cleanup).
 		Handler(newApp()).
 		Post("/api/v1/genres").
 		Header("Authorization", token).
@@ -318,7 +314,6 @@ func TestCreateGenre_ValidationFailed(t *testing.T) {
 
 	apitest.
 		New().
-		Observe(cleanup).
 		Handler(newApp()).
 		Post("/api/v1/genres").
 		Header("Authorization", token).
@@ -348,7 +343,6 @@ func TestGetGenreByID_Success(t *testing.T) {
 
 	apitest.
 		New().
-		Observe(cleanup).
 		Handler(newApp()).
 		Get("/api/v1/genres/" + genreID).
 		Header("Authorization", token).
@@ -362,11 +356,51 @@ func TestGetGenreByID_Failed(t *testing.T) {
 
 	apitest.
 		New().
-		Observe(cleanup).
 		Handler(newApp()).
 		Get("/api/v1/genres/-1").
 		Header("Authorization", token).
 		Expect(t).
 		Status(http.StatusNotFound).
+		End()
+}
+
+func TestUpdateGenre_Success(t *testing.T) {
+	var token string = getJwtToken(t)
+	
+	genre := getGenre()
+	genreID := strconv.Itoa(int(genre.ID))
+
+	var genreRequest *genres.Genre = &genres.Genre{
+		Name: "testupdate",
+	}
+
+	apitest.
+		New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Put("/api/v1/genres/" + genreID).
+		Header("Authorization", token).
+		JSON(genreRequest).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestUpdateGenre_ValidationFailed(t *testing.T) {
+	var token string = getJwtToken(t)
+
+	genre := getGenre()
+	genreID := strconv.Itoa(int(genre.ID))
+
+	var genreRequest *genres.Genre = &genres.Genre{}
+
+	apitest.
+		New().
+		Handler(newApp()).
+		Put("/api/v1/genres/" + genreID).
+		Header("Authorization", token).
+		JSON(genreRequest).
+		Expect(t).
+		Status(http.StatusBadRequest).
 		End()
 }
