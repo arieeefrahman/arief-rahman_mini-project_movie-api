@@ -15,12 +15,12 @@ type Movie struct {
 	CreatedAt 	time.Time 		`json:"created_at"`
 	UpdatedAt 	time.Time 		`json:"updated_at"`
 	DeletedAt 	gorm.DeletedAt 	`json:"deleted_at"`
-	Title 	  	string 			`json:"title"`
-	Synopsis  	string 			`json:"synopsis"`
+	Title 	  	string 			`json:"title" faker:"word"`
+	Synopsis  	string 			`json:"synopsis" faker:"sentence"`
 	Genre 		genres.Genre 	`json:"genre"`
 	GenreID 	uint			`json:"genre_id"`
-	ReleaseDate	datatypes.Date	`json:"release_date"`
-	RatingScore float64			`json:"rating_score"`
+	ReleaseDate	datatypes.Date	`json:"release_date" faker:"date"`
+	RatingScore float64			`json:"rating_score" faker:"oneof: 9, 10"`
 }
 
 func FromDomain(domain *movieUseCase.Domain) *Movie {

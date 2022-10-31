@@ -12,7 +12,7 @@ type Genre struct {
 	CreatedAt time.Time			`json:"created_at"`
 	UpdatedAt time.Time			`json:"updated_at"`
 	DeletedAt gorm.DeletedAt	`json:"deleted_at"`
-	Name      string			`json:"name" gorm:"unique"`
+	Name      string			`json:"name" gorm:"unique" faker:"name"`
 }
 
 func FromDomain(domain *genres.Domain) *Genre {
