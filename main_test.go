@@ -8,17 +8,17 @@ import (
 	"net/http"
 	"strconv"
 	"testing"
+	"time"
 
 	_driverFactory "mini-project-movie-api/drivers"
 
+	_genreUseCase "mini-project-movie-api/businesses/genres"
+	_genreController "mini-project-movie-api/controllers/genres"
 	_dbDriver "mini-project-movie-api/drivers/mysql"
 	"mini-project-movie-api/drivers/mysql/genres"
 	"mini-project-movie-api/drivers/mysql/movies"
 	"mini-project-movie-api/drivers/mysql/ratings"
 	"mini-project-movie-api/drivers/mysql/users"
-
-	_genreUseCase "mini-project-movie-api/businesses/genres"
-	_genreController "mini-project-movie-api/controllers/genres"
 
 	_movieUseCase "mini-project-movie-api/businesses/movies"
 	_movieController "mini-project-movie-api/controllers/movies"
@@ -211,8 +211,7 @@ func TestSignup_Success(t *testing.T) {
 		Password: "123123",
 	}
 
-	apitest.
-		New().
+	apitest.New().
 		Observe(cleanup).
 		Handler(newApp()).
 		Post("/api/v1/users/signup").
@@ -228,8 +227,7 @@ func TestSignup_ValidationFailed(t *testing.T) {
 		Password: "",
 	}
 
-	apitest.
-		New().
+	apitest.New().
 		Handler(newApp()).
 		Post("/api/v1/users/signup").
 		JSON(userRequest).
@@ -262,8 +260,7 @@ func TestLogin_ValidationFailed(t *testing.T) {
 		Password: "",
 	}
 
-	apitest.
-		New().
+	apitest.New().
 		Handler(newApp()).
 		Post("/api/v1/users/login").
 		JSON(userRequest).
@@ -278,13 +275,50 @@ func TestLogin_Failed(t *testing.T) {
 		Password: "123123",
 	}
 
-	apitest.
-		New().
+	apitest.New().
 		Handler(newApp()).
 		Post("/api/v1/users/login").
 		JSON(userRequest).
 		Expect(t).
 		Status(http.StatusUnauthorized).
+		End()
+}
+
+func TestGetGenres_Success(t *testing.T) {
+	var token string = getJwtToken(t)
+
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/genres").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetGenreByID_Success(t *testing.T) {
+	var token string = getJwtToken(t)
+	genre := getGenre()
+	id := strconv.Itoa(int(genre.ID))
+
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/genres/" + id).
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetGenreByID_Failed(t *testing.T) {
+	var token string = getJwtToken(t)
+
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/genres/-1").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusNotFound).
 		End()
 }
 
@@ -295,8 +329,7 @@ func TestCreateGenre_Success(t *testing.T) {
 		Name: "test",
 	}
 
-	apitest.
-		New().
+	apitest.New().
 		Handler(newApp()).
 		Post("/api/v1/genres").
 		Header("Authorization", token).
@@ -313,56 +346,13 @@ func TestCreateGenre_ValidationFailed(t *testing.T) {
 		Name: "",
 	}
 
-	apitest.
-		New().
+	apitest.New().
 		Handler(newApp()).
 		Post("/api/v1/genres").
 		Header("Authorization", token).
 		JSON(genreRequest).
 		Expect(t).
 		Status(http.StatusBadRequest).
-		End()
-}
-
-func TestGetGenres_Success(t *testing.T) {
-	var token string = getJwtToken(t)
-
-	apitest.
-		New().
-		Handler(newApp()).
-		Get("/api/v1/genres").
-		Header("Authorization", token).
-		Expect(t).
-		Status(http.StatusOK).
-		End()
-}
-
-func TestGetGenre_Success(t *testing.T) {
-	var token string = getJwtToken(t)
-	var genre genres.Genre = getGenre()
-	id := strconv.Itoa(int(genre.ID))
-
-	apitest.
-		New().
-		Observe(cleanup).
-		Handler(newApp()).
-		Get("/api/v1/genres/" + id).
-		Header("Authorization", token).
-		Expect(t).
-		Status(http.StatusOK).
-		End()
-}
-
-func TestGetGenre_Failed(t *testing.T) {
-	var token string = getJwtToken(t)
-
-	apitest.
-		New().
-		Handler(newApp()).
-		Get("/api/v1/genres/-1").
-		Header("Authorization", token).
-		Expect(t).
-		Status(http.StatusNotFound).
 		End()
 }
 
@@ -396,8 +386,7 @@ func TestUpdateGenre_ValidationFailed(t *testing.T) {
 
 	var genreRequest *genres.Genre = &genres.Genre{}
 
-	apitest.
-		New().
+	apitest.New().
 		Observe(cleanup).
 		Handler(newApp()).
 		Put("/api/v1/genres/" + genreID).
@@ -414,8 +403,7 @@ func TestDeleteGenre_Success(t *testing.T) {
 	genre := getGenre()
 	genreID := strconv.Itoa(int(genre.ID))
 
-	apitest.
-		New().
+	apitest.New().
 		Observe(cleanup).
 		Handler(newApp()).
 		Delete("/api/v1/genres/" + genreID).
@@ -429,12 +417,293 @@ func TestDeleteGenre_Success(t *testing.T) {
 func TestDeleteGenre_Failed(t *testing.T) {
 	var token string = getJwtToken(t)
 	
-	apitest.
-		New().
+	apitest.New().
 		Handler(newApp()).
 		Delete("/api/v1/genres/-1").
 		Header("Authorization", token).
 		Expect(t).
 		Status(http.StatusNotFound).
+		End()
+}
+
+func TestGetMovies_Success(t *testing.T) {
+	token := getJwtToken(t)
+	
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/movies").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetMovieByID_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	movie := getMovie()
+	id := strconv.Itoa(int(movie.ID))
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Get("/api/v1/movies/" + id).
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetMovieByID_NotFound(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/movies/-1").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusNotFound).
+		End()
+}
+
+func TestCreateMovie_Success(t *testing.T) {
+	genre := getGenre()
+
+	releaseDate := "2020-01-01"
+	date, _ := time.Parse("2006-01-02", releaseDate)
+	
+
+	var movieRequest *movies.Movie = &movies.Movie{
+		Title: "test",
+		Synopsis: "test",
+		GenreID: genre.ID,
+		ReleaseDate: date,
+	}
+
+	var token string = getJwtToken(t)
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Post("/api/v1/movies").
+		Header("Authorization", token).
+		JSON(movieRequest).
+		Expect(t).
+		Status(http.StatusCreated).
+		End()
+}
+
+func TestCreateMovie_ValidationFailed(t *testing.T) {
+	token := getJwtToken(t)
+
+	var movieRequest *movies.Movie = &movies.Movie{}
+
+	apitest.New().
+		Handler(newApp()).
+		Post("/api/v1/movies").
+		Header("Authorization", token).
+		JSON(movieRequest).
+		Expect(t).
+		Status(http.StatusBadRequest).
+		End()
+}
+
+func TestUpdateMovie_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	movie := getMovie()
+	id := strconv.Itoa(int(movie.ID))
+
+	var movieRequest *movies.Movie = &movies.Movie{
+		Title: "abcd",
+		Synopsis: "abcd",
+		GenreID: movie.GenreID,
+		ReleaseDate: movie.ReleaseDate,
+	}
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Put("/api/v1/movies/" + id).
+		Header("Authorization", token).
+		JSON(movieRequest).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestUpdateMovie_ValidationFailed(t *testing.T) {
+	token := getJwtToken(t)
+
+	movie := getMovie()
+	id := strconv.Itoa(int(movie.ID))
+
+	var movieRequest *movies.Movie = &movies.Movie{}
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Put("/api/v1/movies/" + id).
+		Header("Authorization", token).
+		JSON(movieRequest).
+		Expect(t).
+		Status(http.StatusBadRequest).
+		End()
+}
+
+func TestDeleteMovie_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	movie := getMovie()
+	id := strconv.Itoa(int(movie.ID))
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Delete("/api/v1/movies/" + id).
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestDeleteMovie_Failed(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().
+		Handler(newApp()).
+		Delete("/api/v1/movies/-1").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusNotFound).
+		End()
+}
+
+func TestGetMoviesByGenreID_Success(t *testing.T) {
+	token := getJwtToken(t)
+	
+	movie := getMovie()
+	genreID := strconv.Itoa(int(movie.GenreID))
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Get("/api/v1/movies/genre/" + genreID).
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetMoviesByGenreID_NotFound(t *testing.T) {
+	token := getJwtToken(t)
+	
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/movies/genre/0").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusNotFound).
+		End()
+}
+
+func TestGetLatestMovies_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().
+		Handler(newApp()).
+		Get("/api/v1/movies/latest").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetRatings_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Get("/api/v1/ratings").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetRatingByID_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	rating := getRating()
+	ratingID := strconv.Itoa(int(rating.ID))
+
+	apitest.New().Observe(cleanup).Handler(newApp()).Get("/api/v1/ratings/" + ratingID).Header("Authorization", token).Expect(t).Status(http.StatusOK).End()
+}
+
+func TestGetRatingByID_NotFound(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().Handler(newApp()).Get("/api/v1/ratings/0").Header("Authorization", token).Expect(t).Status(http.StatusNotFound).End()
+}
+
+
+func TestCreateRating_Success(t *testing.T) {
+	token := getJwtToken(t)
+	movie := getMovie()
+	user := getUser()
+	
+	var ratingRequest *ratings.Rating = &ratings.Rating{
+		Score: 10,
+		MovieID: movie.ID,
+		UserID: user.ID,
+	}
+
+	apitest.New().
+		Observe(cleanup).
+		Handler(newApp()).
+		Post("/api/v1/ratings").
+		Header("Authorization", token).
+		JSON(ratingRequest).
+		Expect(t).
+		Status(http.StatusCreated).
+		End()
+}
+
+func TestCreateRating_ValidationFailed(t *testing.T) {
+	var token string = getJwtToken(t)
+	
+	var ratingRequest *ratings.Rating = &ratings.Rating{}
+
+	apitest.New().
+		Handler(newApp()).
+		Post("/api/v1/ratings").
+		Header("Authorization", token).
+		JSON(ratingRequest).
+		Expect(t).
+		Status(http.StatusBadRequest).
+		End()
+}
+
+func TestLogout_Success(t *testing.T) {
+	var token string = getJwtToken(t)
+
+	apitest.New().
+		Handler(newApp()).
+		Observe(cleanup).
+		Post("/api/v1/users/logout").
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestLogout_Failed(t *testing.T) {
+	apitest.New().
+		Handler(newApp()).
+		Observe(cleanup).
+		Post("/api/v1/users/logout").
+		Expect(t).
+		Status(http.StatusBadRequest).
 		End()
 }
