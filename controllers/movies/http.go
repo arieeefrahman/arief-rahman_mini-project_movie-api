@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/datatypes"
 )
 
 type MovieController struct {
@@ -59,7 +58,7 @@ func (mc *MovieController) Create(c echo.Context) error {
 		Title: inputTemp.Title,
 		Synopsis: inputTemp.Synopsis,
 		GenreID: inputTemp.GenreID,
-		ReleaseDate: datatypes.Date(date),
+		ReleaseDate: date,
 	}
 
 	err := input.Validate()
@@ -93,7 +92,7 @@ func (mc *MovieController) Update(c echo.Context) error {
 		Title: inputTemp.Title,
 		Synopsis: inputTemp.Synopsis,
 		GenreID: inputTemp.GenreID,
-		ReleaseDate: datatypes.Date(date),
+		ReleaseDate: date,
 	}
 
 	err := input.Validate()
@@ -128,6 +127,10 @@ func (mc *MovieController) GetByGenreID(c echo.Context) error {
 		return ctrl.NewResponse(c, http.StatusNotFound, "failed", "genre not found", "")
 	}
 
+	if len(moviesData) == 0 {
+		return ctrl.NewResponse(c, http.StatusNotFound, "failed", "genre not found", "")
+	}
+
 	for _, movie := range moviesData {
 		movies = append(movies, response.FromDomain(movie))
 	}
@@ -147,10 +150,10 @@ func (mc *MovieController) GetLatest(c echo.Context) error {
 }
 
 func (mc *MovieController) GetByTitle(c echo.Context) error {
-	var keyword string = c.QueryParam("keyword")
+	var search string = c.QueryParam("search")
 
 	rgx := regexp.MustCompile(`[+]`)
-	title := rgx.ReplaceAllString(keyword, " ")
+	title := rgx.ReplaceAllString(search, " ")
 	
 	movie := mc.movieUseCase.GetByTitle(title)
 
