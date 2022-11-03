@@ -3,7 +3,6 @@ package movies
 import (
 	"time"
 
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +15,7 @@ type Domain struct {
 	Synopsis  		string
 	GenreName 		string
 	GenreID 		uint
-	ReleaseDate		datatypes.Date
+	ReleaseDate		time.Time
 	RatingScore 	float64
 }
 

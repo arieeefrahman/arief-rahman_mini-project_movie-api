@@ -2,24 +2,24 @@ package request
 
 import (
 	"mini-project-movie-api/businesses/movies"
+	"time"
 
 	"github.com/go-playground/validator/v10"
-	"gorm.io/datatypes"
 )
 
 type Movie struct {
 	Title       string 			`json:"title" validate:"required"`
 	Synopsis    string 			`json:"synopsis" validate:"required"`
 	GenreID     uint   			`json:"genre_id" validate:"required"`
-	ReleaseDate datatypes.Date	`json:"release_date" validate:"required"`
-	RatingScore float64 			`json:"rating_score"`
+	ReleaseDate time.Time		`json:"release_date"`
+	RatingScore float64 		`json:"rating_score"`
 }
 
 type MovieHandleDate struct {
 	Title       string 			`json:"title" validate:"required"`
 	Synopsis    string 			`json:"synopsis" validate:"required"`
 	GenreID     uint   			`json:"genre_id" validate:"required"`
-	ReleaseDate string			`json:"release_date"`
+	ReleaseDate string			`json:"release_date"`	
 	RatingScore float64 		`json:"rating_score"`
 }
 

@@ -4,7 +4,6 @@ import (
 	"mini-project-movie-api/businesses/movies"
 	"time"
 
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +16,7 @@ type Movie struct {
 	Synopsis    string			`json:"synopsis"`
 	GenreName   string			`json:"genre_name"`
 	GenreID     uint			`json:"genre_id"`
-	ReleaseDate datatypes.Date	`json:"release_date"`
+	ReleaseDate time.Time		`json:"release_date"`
 	RatingScore float64			`json:"rating_score"`
 }
 

@@ -6,7 +6,6 @@ import (
 	movieUseCase "mini-project-movie-api/businesses/movies"
 	"mini-project-movie-api/drivers/mysql/genres"
 
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +18,7 @@ type Movie struct {
 	Synopsis  	string 			`json:"synopsis" faker:"sentence"`
 	Genre 		genres.Genre 	`json:"genre"`
 	GenreID 	uint			`json:"genre_id"`
-	ReleaseDate	datatypes.Date	`json:"release_date" faker:"date"`
+	ReleaseDate	time.Time	`json:"release_date" faker:"date"`
 	RatingScore float64			`json:"rating_score" faker:"oneof: 9, 10"`
 }
 

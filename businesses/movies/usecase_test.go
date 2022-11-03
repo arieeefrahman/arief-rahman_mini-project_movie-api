@@ -4,12 +4,11 @@ import (
 	"mini-project-movie-api/businesses/genres"
 	"mini-project-movie-api/businesses/movies"
 	_movieMock "mini-project-movie-api/businesses/movies/mocks"
-	
+
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/datatypes"
 )
 
 var (
@@ -33,7 +32,7 @@ func TestMain(m *testing.M) {
 		Title: "title",
 		Synopsis: "title synopsis",
 		GenreID: genreDomain.ID,
-		ReleaseDate: datatypes.Date(releaseDate),
+		ReleaseDate: releaseDate,
 	}
 
 	m.Run()
