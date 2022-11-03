@@ -52,19 +52,6 @@ func CheckToken(token string) bool {
 	return false
 }
 
-// func GetUser(c echo.Context) *JwtCustomClaims {
-// 	user := c.Get("user").(*jwt.Token)
-// 	isListed := CheckToken(user.Raw)
-	
-// 	if !isListed {
-// 		return nil
-// 	}
-
-// 	claims := user.Claims.(*JwtCustomClaims)
-
-// 	return claims
-// }
-
 func GetUser(token *jwt.Token) *JwtCustomClaims {
 	// user := c.Get("user").(*jwt.Token)
 	isListed := CheckToken(token.Raw)
