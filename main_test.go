@@ -6,6 +6,7 @@ import (
 	_routes "mini-project-movie-api/app/routes"
 	_util "mini-project-movie-api/utils"
 	"net/http"
+	"regexp"
 	"strconv"
 	"testing"
 	"time"
@@ -619,6 +620,30 @@ func TestGetLatestMovies_Success(t *testing.T) {
 		End()
 }
 
+func TestGetMovieByTitle_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	movie := getMovie()
+
+	movieTitle := movie.Title
+
+	rgx := regexp.MustCompile(`[+]`)
+	title := rgx.ReplaceAllString(movieTitle, " ")
+
+	apitest.New().Observe(cleanup).
+		Handler(newApp()).Get("/api/v1/movies/title?").Query("search", title).
+		Header("Authorization", token).
+		Expect(t).
+		Status(http.StatusOK).
+		End()
+}
+
+func TestGetMovieByTitle_NotFound(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().Handler(newApp()).Get("/api/v1/movies/title?").Query("search", "").Header("Authorization", token).Expect(t).Status(http.StatusNotFound).End()
+}
+
 func TestGetRatings_Success(t *testing.T) {
 	token := getJwtToken(t)
 
@@ -683,6 +708,65 @@ func TestCreateRating_ValidationFailed(t *testing.T) {
 		Expect(t).
 		Status(http.StatusBadRequest).
 		End()
+}
+
+func TestUpdateRating_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	rating := getRating()
+	ratingId := strconv.Itoa(int(rating.ID))
+	
+	var ratingRequest *ratings.Rating = &ratings.Rating{
+		Score: 10,
+		MovieID: rating.MovieID,
+		UserID: rating.UserID,
+	}
+
+	apitest.New().Observe(cleanup).Handler(newApp()).Put("/api/v1/ratings/" + ratingId).Header("Authorization", token).JSON(ratingRequest).Expect(t).Status(http.StatusOK).End()
+}
+
+func TestUpdateRating_ValidationFailed(t *testing.T) {
+	token := getJwtToken(t)
+
+	rating := getRating()
+	ratingId := strconv.Itoa(int(rating.ID))
+	
+	var ratingRequest *ratings.Rating = &ratings.Rating{}
+
+	apitest.New().Observe(cleanup).Handler(newApp()).Put("/api/v1/ratings/" + ratingId).Header("Authorization", token).JSON(ratingRequest).Expect(t).Status(http.StatusBadRequest).End()
+}
+
+func TestDeleteRating_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	rating := getRating()
+	ratingId := strconv.Itoa(int(rating.ID))
+
+	apitest.New().Observe(cleanup).Handler(newApp()).Delete("/api/v1/ratings/" + ratingId).Header("Authorization", token).Expect(t).Status(http.StatusOK).End()
+}
+
+func TestDeleteRating_Failed(t *testing.T) {
+	token := getJwtToken(t)
+
+	apitest.New().Handler(newApp()).Delete("/api/v1/ratings/0").Header("Authorization", token).Expect(t).Status(http.StatusNotFound).End()
+}
+
+func TestGetRatingByMovieID_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	rating := getRating()
+	movieID := strconv.Itoa(int(rating.MovieID))
+
+	apitest.New().Observe(cleanup).Handler(newApp()).Get("/api/v1/ratings/movie?").Query("movie_id", movieID).Header("Authorization", token).Expect(t).Status(http.StatusOK).End()
+}
+
+func TestGetRatingByUserID_Success(t *testing.T) {
+	token := getJwtToken(t)
+
+	rating := getRating()
+	userID := strconv.Itoa(int(rating.UserID))
+
+	apitest.New().Observe(cleanup).Handler(newApp()).Get("/api/v1/ratings/user?").Query("user_id", userID).Header("Authorization", token).Expect(t).Status(http.StatusOK).End()
 }
 
 func TestLogout_Success(t *testing.T) {

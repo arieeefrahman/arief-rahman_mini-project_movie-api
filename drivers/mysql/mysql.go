@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	"mini-project-movie-api/drivers/mysql/genres"
 	"mini-project-movie-api/drivers/mysql/movies"
@@ -86,9 +87,14 @@ func SeedGenre(db *gorm.DB) genres.Genre {
 func SeedMovie(db *gorm.DB) movies.Movie {
 	genre := SeedGenre(db)
 
-	movie, _ := _utils.CreateFaker[movies.Movie]()
+	date, _ := time.Parse("2006-01-02", "2005-01-01")
 
-	movie.GenreID = genre.ID
+	var movie movies.Movie = movies.Movie{
+		Title: "test",
+		Synopsis: "test",
+		GenreID: genre.ID,
+		ReleaseDate: date,
+	}
 
 	if err := db.Create(&movie).Error; err != nil {
 		panic(err)
@@ -101,8 +107,12 @@ func SeedMovie(db *gorm.DB) movies.Movie {
 
 func SeedRating(db *gorm.DB) ratings.Rating {
 	movie := SeedMovie(db)
-
-	rating, _ := _utils.CreateFaker[ratings.Rating]()
+	user := SeedUser(db)
+	var rating ratings.Rating = ratings.Rating{
+		Score: 10,
+		MovieID: movie.ID,
+		UserID: user.ID,
+	}
 
 	rating.MovieID = movie.ID
 

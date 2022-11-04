@@ -131,11 +131,6 @@ func (rc *RatingController) Update(c echo.Context) error {
 	if err != nil {
 		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
 	}
-
-	// not allow user to update other users rating
-	if ratingData.UserID != input.UserID {
-		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "not allowed", "")
-	}
 	
 	rating := rc.ratingUseCase.Update(id, input.ToDomain())
 
@@ -160,13 +155,6 @@ func (rc *RatingController) Delete(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, map[string]any{
 			"message": "invalid token",
 		})
-	}
-
-	userId := middlewares.GetUser(user).ID
-
-	// not allow user to update other users rating
-	if userId != int(ratingData.ID) {
-		return ctrl.NewResponse(c, http.StatusBadRequest, "failed", "not allowed", "")
 	}
 	
 	isSuccess := rc.ratingUseCase.Delete(ratingId)
@@ -207,10 +195,6 @@ func (rc *RatingController) GetByUserID(c echo.Context) error {
 
 	for _, rating := range ratingsData {
 		ratings = append(ratings, response.FromDomain(rating))
-	}
-
-	if len(ratings) == 0 {
-		return ctrl.NewResponse(c, http.StatusNotFound, "failed", "not exist", "")
 	}
 
 	return ctrl.NewResponse(c, http.StatusOK, "success", "all ratings with user id", ratings)

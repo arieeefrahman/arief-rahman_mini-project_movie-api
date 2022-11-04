@@ -14,7 +14,7 @@ type Rating struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
-	Score 	  int			 `json:"score" faker:"oneof: 9, 10"`
+	Score 	  int			 `json:"score" faker:"oneof: 1, 2"`
 	Movie     movies.Movie	 `json:"movie"`
 	MovieID   uint			 `json:"movie_id"`
 	UserID    uint			 `json:"user_id"`
