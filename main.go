@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	_middlewares "mini-project-movie-api/app/middlewares"
 	_routes "mini-project-movie-api/app/routes"
 	_util "mini-project-movie-api/utils"
@@ -23,6 +24,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 )
+
+const DEFAULT_PORT = "3000"
 
 func main() {
 	configDB := _dbDriver.ConfigDB{
@@ -75,5 +78,13 @@ func main() {
 
 	routesInit.RouteRegister(app)
 
-	app.Logger.Fatal(app.Start(":3000"))
+	var port string = os.Getenv("PORT")
+
+	if port == "" {
+		port = DEFAULT_PORT
+	}
+
+	var appPort string = fmt.Sprintf(":%s", port)
+
+	app.Logger.Fatal(app.Start(appPort))
 }
