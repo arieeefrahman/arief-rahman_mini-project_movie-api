@@ -1,5 +1,5 @@
 ### Mini Project Golang : Movie API
-REST API application to manage notes with rating system
+REST API application to manage movies with rating system
 
 ### How to Run
 1. Clone this repository.
