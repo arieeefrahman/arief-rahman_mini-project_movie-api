@@ -53,10 +53,10 @@ func (mr *movieRepository) Update(id string, movieDomain *movies.Domain) movies.
 
 	updatedMovie := FromDomain(&movie)
 	updatedMovie.Title = movieDomain.Title
-	updatedMovie.Synopsis = movie.Synopsis
-	updatedMovie.GenreID = movie.GenreID
-	updatedMovie.ReleaseDate = movie.ReleaseDate
-	updatedMovie.RatingScore = movie.RatingScore
+	updatedMovie.Synopsis = movieDomain.Synopsis
+	updatedMovie.GenreID = movieDomain.GenreID
+	updatedMovie.ReleaseDate = movieDomain.ReleaseDate
+	updatedMovie.RatingScore = movieDomain.RatingScore
 
 	mr.conn.Save(&updatedMovie)
 
