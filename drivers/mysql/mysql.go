@@ -2,7 +2,6 @@ package mysql_driver
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"time"
 
@@ -28,16 +27,18 @@ type ConfigDB struct {
 
 func (config *ConfigDB) InitDB() *gorm.DB {
 	var err error
-	loc := "Asia%2FJakarta"
+	// loc := "Asia%2FJakarta"
 
-	var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=%s",
-		config.DB_USERNAME,
-		config.DB_PASSWORD,
-		config.DB_HOST,
-		config.DB_PORT,
-		config.DB_NAME,
-		loc,
-	)
+	// var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=%s",
+	// 	config.DB_USERNAME,
+	// 	config.DB_PASSWORD,
+	// 	config.DB_HOST,
+	// 	config.DB_PORT,
+	// 	config.DB_NAME,
+	// 	loc,
+	// )
+
+	var dsn string = "mysql://wz2bcitmn9bywa96:yn9y3lcg5wtv1wsk@o2olb7w3xv09alub.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/lfjladt7nr8arysa"
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
