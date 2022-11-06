@@ -4,7 +4,7 @@ import (
 	"fmt"
 	_middlewares "mini-project-movie-api/app/middlewares"
 	_routes "mini-project-movie-api/app/routes"
-	"os"
+	_util "mini-project-movie-api/utils"
 
 	_driverFactory "mini-project-movie-api/drivers"
 	_dbDriver "mini-project-movie-api/drivers/mysql"
@@ -28,11 +28,11 @@ const DEFAULT_PORT = "3000"
 
 func main() {
 	configDB := _dbDriver.ConfigDB{
-		DB_USERNAME: os.Getenv("DB_USERNAME"),
-		DB_PASSWORD: os.Getenv("DB_PASSWORD"),
-		DB_NAME: os.Getenv("DB_HOST"),
-		DB_HOST: os.Getenv("DB_PORT"),
-		DB_PORT: os.Getenv("DB_NAME"),
+		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
+		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
+		DB_HOST: _util.GetConfig("DB_HOST"),
+		DB_PORT: _util.GetConfig("DB_PORT"),
+		DB_NAME: _util.GetConfig("DB_NAME"),
 	}
 
 	db := configDB.InitDB()
@@ -40,7 +40,7 @@ func main() {
 	_dbDriver.DBMigrate(db)
 
 	configJWT := _middlewares.ConfigJWT{
-		SecretJWT: os.Getenv("JWT_SECRET_KEY"),
+		SecretJWT: _util.GetConfig("JWT_SECRET_KEY"),
 		ExpiresDuration: 1,
 	}
 
@@ -77,13 +77,7 @@ func main() {
 
 	routesInit.RouteRegister(app)
 
-	var port string = os.Getenv("PORT")
-
-	if port == "" {
-		port = DEFAULT_PORT
-	}
-
-	var appPort string = fmt.Sprintf(":%s", port)
+	var appPort string = fmt.Sprintf(":%s", DEFAULT_PORT)
 
 	app.Logger.Fatal(app.Start(appPort))
 }
