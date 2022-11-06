@@ -4,7 +4,6 @@ import (
 	"fmt"
 	_middlewares "mini-project-movie-api/app/middlewares"
 	_routes "mini-project-movie-api/app/routes"
-	_util "mini-project-movie-api/utils"
 	"os"
 
 	_driverFactory "mini-project-movie-api/drivers"
@@ -41,7 +40,7 @@ func main() {
 	_dbDriver.DBMigrate(db)
 
 	configJWT := _middlewares.ConfigJWT{
-		SecretJWT: _util.GetConfig("JWT_SECRET_KEY"),
+		SecretJWT: os.Getenv("JWT_SECRET_KEY"),
 		ExpiresDuration: 1,
 	}
 
