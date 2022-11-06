@@ -74,5 +74,5 @@ func main() {
 
 	routesInit.RouteRegister(app)
 
-	app.Logger.Fatal(app.Start(":8000"))
+	app.Logger.Fatal(app.Start(":3000"))
 }
