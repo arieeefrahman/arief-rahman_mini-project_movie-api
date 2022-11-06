@@ -8,9 +8,9 @@ REST API application to manage movies with rating system
    cp .env.example .env
    ```
 3. Fill the values inside the `.env` file for the database configurations.
-4. Create a new database called `movie-api`.
+4. Create a new database called `movie_api`.
    ```sql
-   CREATE DATABASE "movie-api";
+   CREATE DATABASE "movie_api";
    ```
 5. Run the application with this command.
    ```shell
