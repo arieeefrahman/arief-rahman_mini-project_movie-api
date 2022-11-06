@@ -2,8 +2,9 @@ package main
 
 import (
 	_middlewares "mini-project-movie-api/app/middlewares"
-	_util "mini-project-movie-api/utils"
 	_routes "mini-project-movie-api/app/routes"
+	_util "mini-project-movie-api/utils"
+	"os"
 
 	_driverFactory "mini-project-movie-api/drivers"
 	_dbDriver "mini-project-movie-api/drivers/mysql"
@@ -25,11 +26,11 @@ import (
 
 func main() {
 	configDB := _dbDriver.ConfigDB{
-		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
-		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST: _util.GetConfig("DB_HOST"),
-		DB_PORT: _util.GetConfig("DB_PORT"),
-		DB_NAME: _util.GetConfig("DB_NAME"),
+		DB_USERNAME: os.Getenv("DB_USERNAME"),
+		DB_PASSWORD: os.Getenv("DB_PASSWORD"),
+		DB_NAME: os.Getenv("DB_HOST"),
+		DB_HOST: os.Getenv("DB_PORT"),
+		DB_PORT: os.Getenv("DB_NAME"),
 	}
 
 	db := configDB.InitDB()

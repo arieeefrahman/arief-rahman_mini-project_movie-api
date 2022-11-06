@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"mini-project-movie-api/drivers/mysql/genres"
@@ -31,11 +32,11 @@ func (config *ConfigDB) InitDB() *gorm.DB {
 	loc := "Asia%2FJakarta"
 
 	var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=%s",
-		config.DB_USERNAME,
-		config.DB_PASSWORD,
-		config.DB_HOST,
-		config.DB_PORT,
-		config.DB_NAME,
+		os.Getenv("DB_USERNAME"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
 		loc,
 	)
 
