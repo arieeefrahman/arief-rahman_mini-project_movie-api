@@ -39,7 +39,7 @@ func newApp() *echo.Echo {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST: _util.GetConfig("DB_TEST_HOST"),
+		DB_HOST: _util.GetConfig("DB_HOST"),
 		DB_PORT: _util.GetConfig("DB_PORT"),
 		DB_NAME: _util.GetConfig("DB_TEST_NAME"),
 	}
@@ -94,7 +94,7 @@ func cleanup(res *http.Response, req *http.Request, apiTest *apitest.APITest) {
 		configDB := _dbDriver.ConfigDB{
 			DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 			DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-			DB_HOST:     _util.GetConfig("DB_TEST_HOST"),
+			DB_HOST:     _util.GetConfig("DB_HOST"),
 			DB_PORT:     _util.GetConfig("DB_PORT"),
 			DB_NAME:     _util.GetConfig("DB_TEST_NAME"),
 		}
@@ -109,7 +109,7 @@ func getJwtToken(t *testing.T) string {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST:     _util.GetConfig("DB_TEST_HOST"),
+		DB_HOST:     _util.GetConfig("DB_HOST"),
 		DB_PORT:     _util.GetConfig("DB_PORT"),
 		DB_NAME:     _util.GetConfig("DB_TEST_NAME"),
 	}
@@ -146,7 +146,7 @@ func getUser() users.User {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST:     _util.GetConfig("DB_TEST_HOST"),
+		DB_HOST:     _util.GetConfig("DB_HOST"),
 		DB_PORT:     _util.GetConfig("DB_PORT"),
 		DB_NAME:     _util.GetConfig("DB_TEST_NAME"),
 	}
@@ -162,7 +162,7 @@ func getMovie() movies.Movie {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST:     _util.GetConfig("DB_TEST_HOST"),
+		DB_HOST:     _util.GetConfig("DB_HOST"),
 		DB_PORT:     _util.GetConfig("DB_PORT"),
 		DB_NAME:     _util.GetConfig("DB_TEST_NAME"),
 	}
@@ -178,7 +178,7 @@ func getGenre() genres.Genre {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST:     _util.GetConfig("DB_TEST_HOST"),
+		DB_HOST:     _util.GetConfig("DB_HOST"),
 		DB_PORT:     _util.GetConfig("DB_PORT"),
 		DB_NAME:     _util.GetConfig("DB_TEST_NAME"),
 	}
@@ -194,7 +194,7 @@ func getRating() ratings.Rating {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST:     _util.GetConfig("DB_TEST_HOST"),
+		DB_HOST:     _util.GetConfig("DB_HOST"),
 		DB_PORT:     _util.GetConfig("DB_PORT"),
 		DB_NAME:     _util.GetConfig("DB_TEST_NAME"),
 	}
