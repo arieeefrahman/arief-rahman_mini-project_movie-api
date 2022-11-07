@@ -30,7 +30,7 @@ func main() {
 	configDB := _dbDriver.ConfigDB{
 		DB_USERNAME: _util.GetConfig("DB_USERNAME"),
 		DB_PASSWORD: _util.GetConfig("DB_PASSWORD"),
-		DB_HOST: _util.GetConfig("DB_HOST"),
+		DB_HOST: _util.GetConfig("DB_TEST_HOST"),
 		DB_PORT: _util.GetConfig("DB_PORT"),
 		DB_NAME: _util.GetConfig("DB_NAME"),
 	}
